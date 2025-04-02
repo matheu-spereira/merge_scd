@@ -107,12 +107,27 @@ services:
     networks:
       - app_net
 
+  db:
+    image: pgduckdb/pgduckdb:16-main
+    ports:
+      - ${PORT:-5432}:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 85392491
+    volumes:
+      - pgduckdb_data:/var/lib/postgresql/data
+      - ./docker/postgresql.conf:/etc/postgresql/postgresql.conf
+    command: postgres -c 'config_file=/etc/postgresql/postgresql.conf'
+    restart: always
+    networks:
+      - app_net
       
 # Definição de volumes persistentes usados por vários contêineres
 volumes:
   spark-events:  # Volume compartilhado para armazenar eventos do Spark
   spark-jars:  # Volume compartilhado para jars eventos do Spark
   minio-data:  # Volume persistente para dados do MinIO
+  pgduckdb_data:
 
 # Definição da rede para os contêineres se comunicarem
 networks:
